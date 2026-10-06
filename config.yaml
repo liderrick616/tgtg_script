@@ -1,0 +1,92 @@
+# ─────────────────────────────────────────────────────────────
+# TGTG Sniper Bot — Configuration
+# ─────────────────────────────────────────────────────────────
+
+# Your Too Good To Go account email (used for first-time login only)
+tgtg:
+  email: "liderrick616@gmail.com"
+
+# ─────────────────────────────────────────────────────────────
+# Target Items
+# ─────────────────────────────────────────────────────────────
+# Add the item_id of each surprise bag you want to monitor.
+# Run `python main.py list-favorites` to find your item IDs.
+#
+# You can also set monitor_all_favorites to true to watch
+# every bag in your favorites list automatically.
+
+monitor_all_favorites: false
+
+targets:
+  - item_id: "231069936014938561"
+    name: "Heval cafe"    # optional friendly name
+  - item_id: "231679099986547809"
+    name: "Heval cafe"    # optional friendly name
+  - item_id: "201852175370777825"
+    name: "茶宴 Chayan Toronto"
+  - item_id: "184648655750917153"
+    name: "Freshslice Pizza - 525 University Ave"
+
+# ─────────────────────────────────────────────────────────────
+# Polling Schedule
+# ─────────────────────────────────────────────────────────────
+polling:
+  # Normal polling interval in seconds (recommended: 60–120)
+  normal_interval: 60
+
+  # Burst polling interval in seconds (recommended: 2–5)
+  burst_interval: 3
+
+  # Jitter range (seconds) added to each poll to mimic human behavior
+  jitter_min: 0.5
+  jitter_max: 1.8
+
+  # Burst time windows — poll aggressively during these times.
+  # Format: HH:MM in 24-hour local time. The bot uses your system timezone.
+  # Leave empty [] to disable burst mode.
+  burst_windows:
+    - start: "0:00"
+      end: "11:59"
+    - start: "21:10"
+      end: "21:59"
+
+  # Cooldown after a DataDome 403 block (seconds)
+  error_cooldown: 300
+
+# ─────────────────────────────────────────────────────────────
+# Reservation
+# ─────────────────────────────────────────────────────────────
+reservation:
+  # Automatically reserve the bag when stock is detected?
+  # If false, the bot will only send a notification.
+  auto_reserve: true
+
+  # Number of bags to reserve (usually 1)
+  quantity: 1
+
+# ─────────────────────────────────────────────────────────────
+# Notifications
+# ─────────────────────────────────────────────────────────────
+notifications:
+  # macOS native notification (always enabled on macOS)
+  macos_alert: true
+  # Play a sound on detection? (macOS only)
+  play_sound: true
+
+  # Telegram Bot (recommended — get instant phone notifications)
+  telegram:
+    enabled: false
+    bot_token: ""        # Get from @BotFather on Telegram
+    chat_id: ""          # Your Telegram user/chat ID
+
+  # Discord Webhook (optional)
+  discord:
+    enabled: false
+    webhook_url: ""      # Discord channel webhook URL
+
+# ─────────────────────────────────────────────────────────────
+# Logging
+# ─────────────────────────────────────────────────────────────
+logging:
+  level: "INFO"          # DEBUG, INFO, WARNING, ERROR
+  file: "tgtg_bot.log"

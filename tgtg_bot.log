@@ -1,0 +1,207 @@
+2026-09-08 19:34:25 [INFO   ] 🧪 Sending test notifications...
+
+2026-09-08 19:34:28 [INFO   ] 📣 Notifications sent: 🏪 Test Bakery
+🥡 Surprise Bag
+💰 5.99 CAD
+📦 Available: 3
+
+✅ This is a test notific...
+2026-09-08 19:34:28 [INFO   ] 
+✅ Test complete! Check your notification channels.
+2026-09-08 19:39:35 [ERROR  ] ❌ Set your email in config.yaml first!
+2026-09-08 19:39:35 [INFO   ]    Edit config.yaml and set: tgtg.email: "your@email.com"
+2026-09-08 19:39:50 [INFO   ] Starting login for: liderrick616@gmail.com
+2026-09-08 19:39:50 [INFO   ] 📧 Check your email — click the login link from Too Good To Go.
+2026-09-08 19:39:50 [INFO   ] ⏳ Waiting for email verification...
+2026-09-08 19:40:48 [INFO   ] ✅ Login successful!
+2026-09-08 19:40:48 [INFO   ] Credentials saved to /Users/derrick/Desktop/tgtg script/credentials.json
+2026-09-08 19:40:48 [INFO   ] 
+✅ Login complete! You can now run: python main.py run
+2026-09-08 19:41:04 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 19:41:04 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 19:41:04 [INFO   ] 📋 Fetching your favorite items...
+
+2026-09-08 19:43:32 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 19:43:32 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 19:43:32 [INFO   ] 🚀 Starting TGTG Sniper Bot...
+2026-09-08 19:43:32 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:43:32 [INFO   ] 📋 Mode: Auto-Reserve + Notify
+2026-09-08 19:43:32 [INFO   ] 📋 Monitoring: 3 target(s)
+2026-09-08 19:43:32 [INFO   ] 📋 Notifications: macOS
+2026-09-08 19:43:32 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:43:32 [INFO   ] 🎯 Monitoring targets: 201852175370777825 (茶宴 Chayan Toronto), 231069936014938561 (Heval cafe), 231679099986547809 (Heval cafe)
+2026-09-08 19:43:32 [INFO   ] ⚡ Burst windows configured: 08:00-08:20, 17:00-17:20
+2026-09-08 19:43:32 [INFO   ] 🔄 Normal interval: 90s | Burst interval: 3s
+2026-09-08 19:43:32 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:43:32 [INFO   ] 🚀 Polling started. Press Ctrl+C to stop.
+
+2026-09-08 19:43:33 [INFO   ] [19:43:33] Poll #1 | 🔄NORMAL | Checked: 9 items | Available: 0
+2026-09-08 19:45:05 [INFO   ] [19:45:05] Poll #2 | 🔄NORMAL | Checked: 10 items | Available: 0
+2026-09-08 19:46:36 [INFO   ] [19:46:36] Poll #3 | 🔄NORMAL | Checked: 10 items | Available: 0
+2026-09-08 19:47:06 [INFO   ] 
+🛑 Shutdown requested. Finishing current cycle...
+2026-09-08 19:47:06 [INFO   ] 
+🛑 Polling stopped.
+2026-09-08 19:47:06 [INFO   ]    Total polls: 3
+2026-09-08 19:47:06 [INFO   ]    Items reserved this session: 0
+2026-09-08 19:57:52 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 19:57:53 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 19:57:53 [INFO   ] 📋 Fetching your favorite items...
+
+2026-09-08 19:58:44 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 19:58:44 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 19:58:44 [INFO   ] 🚀 Starting TGTG Sniper Bot...
+2026-09-08 19:58:44 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:58:44 [INFO   ] 📋 Mode: Auto-Reserve + Notify
+2026-09-08 19:58:44 [INFO   ] 📋 Monitoring: 5 target(s)
+2026-09-08 19:58:44 [INFO   ] 📋 Notifications: macOS
+2026-09-08 19:58:44 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:58:44 [INFO   ] 🎯 Monitoring targets: 271066872308728161 (Jo's Cha X Bolobaw!), 201852175370777825 (茶宴 Chayan Toronto), 184648655750917153 (Freshslice Pizza - 525 University Ave), 231679099986547809 (Heval cafe), 231069936014938561 (Heval cafe)
+2026-09-08 19:58:44 [INFO   ] ⚡ Burst windows configured: 0:00-08:20, 21:20-21:59
+2026-09-08 19:58:44 [INFO   ] 🔄 Normal interval: 90s | Burst interval: 3s
+2026-09-08 19:58:44 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 19:58:44 [INFO   ] 🚀 Polling started. Press Ctrl+C to stop.
+
+2026-09-08 19:58:45 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 3 bags available!
+2026-09-08 19:58:45 [INFO   ] 🎯 STOCK DETECTED at Jo's Cha X Bolobaw!! Attempting reservation...
+2026-09-08 19:58:45 [INFO   ]    Item ID: 271066872308728161 | Available: 3 | Reserving: 1
+2026-09-08 19:58:45 [ERROR  ] ❌ Reservation failed for Jo's Cha X Bolobaw! (ID: 271066872308728161): TgtgClient.create_order() got an unexpected keyword argument 'quantity'
+2026-09-08 19:58:45 [WARNING]    Unexpected error: TgtgClient.create_order() got an unexpected keyword argument 'quantity'
+2026-09-08 19:58:47 [INFO   ] 📣 Notifications sent: 🏪 Jo's Cha X Bolobaw!
+🥡 Drinks Surprise Bag
+💰 4.99 CAD
+📦 Available: 3
+🆔 Item ID:...
+2026-09-08 19:58:47 [INFO   ] [19:58:47] Poll #1 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 19:59:26 [INFO   ] 
+🛑 Shutdown requested. Finishing current cycle...
+2026-09-08 19:59:27 [INFO   ] 
+🛑 Polling stopped.
+2026-09-08 19:59:27 [INFO   ]    Total polls: 1
+2026-09-08 19:59:27 [INFO   ]    Items reserved this session: 0
+2026-09-08 20:00:14 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:00:15 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:00:15 [INFO   ] 🚀 Starting TGTG Sniper Bot...
+2026-09-08 20:00:15 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:00:15 [INFO   ] 📋 Mode: Auto-Reserve + Notify
+2026-09-08 20:00:15 [INFO   ] 📋 Monitoring: 5 target(s)
+2026-09-08 20:00:15 [INFO   ] 📋 Notifications: macOS
+2026-09-08 20:00:15 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:00:15 [INFO   ] 🎯 Monitoring targets: 184648655750917153 (Freshslice Pizza - 525 University Ave), 231069936014938561 (Heval cafe), 201852175370777825 (茶宴 Chayan Toronto), 231679099986547809 (Heval cafe), 271066872308728161 (Jo's Cha X Bolobaw!)
+2026-09-08 20:00:15 [INFO   ] ⚡ Burst windows configured: 0:00-08:20, 21:20-21:59
+2026-09-08 20:00:15 [INFO   ] 🔄 Normal interval: 90s | Burst interval: 3s
+2026-09-08 20:00:15 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:00:15 [INFO   ] 🚀 Polling started. Press Ctrl+C to stop.
+
+2026-09-08 20:00:16 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 3 bags available!
+2026-09-08 20:00:16 [INFO   ] 🎯 STOCK DETECTED at Jo's Cha X Bolobaw!! Attempting reservation...
+2026-09-08 20:00:16 [INFO   ]    Item ID: 271066872308728161 | Available: 3 | Reserving: 1
+2026-09-08 20:00:16 [ERROR  ] ❌ Reservation failed for Jo's Cha X Bolobaw! (ID: 271066872308728161): TgtgClient.create_order() got an unexpected keyword argument 'quantity'
+2026-09-08 20:00:16 [WARNING]    Unexpected error: TgtgClient.create_order() got an unexpected keyword argument 'quantity'
+2026-09-08 20:00:18 [INFO   ] 📣 Notifications sent: 🏪 Jo's Cha X Bolobaw!
+🥡 Drinks Surprise Bag
+💰 4.99 CAD
+📦 Available: 3
+🆔 Item ID:...
+2026-09-08 20:00:18 [INFO   ] [20:00:18] Poll #1 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:01:29 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:01:29 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:01:29 [INFO   ] 🚀 Starting TGTG Sniper Bot...
+2026-09-08 20:01:29 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:01:29 [INFO   ] 📋 Mode: Auto-Reserve + Notify
+2026-09-08 20:01:29 [INFO   ] 📋 Monitoring: 5 target(s)
+2026-09-08 20:01:29 [INFO   ] 📋 Notifications: macOS
+2026-09-08 20:01:29 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:01:29 [INFO   ] 🎯 Monitoring targets: 231679099986547809 (Heval cafe), 231069936014938561 (Heval cafe), 271066872308728161 (Jo's Cha X Bolobaw!), 201852175370777825 (茶宴 Chayan Toronto), 184648655750917153 (Freshslice Pizza - 525 University Ave)
+2026-09-08 20:01:29 [INFO   ] ⚡ Burst windows configured: 0:00-08:20, 21:20-21:59
+2026-09-08 20:01:29 [INFO   ] 🔄 Normal interval: 90s | Burst interval: 3s
+2026-09-08 20:01:29 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:01:29 [INFO   ] 🚀 Polling started. Press Ctrl+C to stop.
+
+2026-09-08 20:01:30 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 3 bags available!
+2026-09-08 20:01:30 [INFO   ] 🎯 STOCK DETECTED at Jo's Cha X Bolobaw!! Attempting reservation...
+2026-09-08 20:01:30 [INFO   ]    Item ID: 271066872308728161 | Available: 3 | Reserving: 1
+2026-09-08 20:01:30 [ERROR  ] ❌ Reservation failed for Jo's Cha X Bolobaw! (ID: 271066872308728161): TgtgClient.create_order() missing 1 required positional argument: 'item_count'
+2026-09-08 20:01:30 [WARNING]    Unexpected error: TgtgClient.create_order() missing 1 required positional argument: 'item_count'
+2026-09-08 20:01:32 [INFO   ] 📣 Notifications sent: 🏪 Jo's Cha X Bolobaw!
+🥡 Drinks Surprise Bag
+💰 4.99 CAD
+📦 Available: 3
+🆔 Item ID:...
+2026-09-08 20:01:32 [INFO   ] [20:01:32] Poll #1 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:02:19 [INFO   ] 
+🛑 Shutdown requested. Finishing current cycle...
+2026-09-08 20:02:20 [INFO   ] 
+🛑 Polling stopped.
+2026-09-08 20:02:20 [INFO   ]    Total polls: 1
+2026-09-08 20:02:20 [INFO   ]    Items reserved this session: 0
+2026-09-08 20:02:34 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:02:34 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:02:34 [INFO   ] 🚀 Starting TGTG Sniper Bot...
+2026-09-08 20:02:34 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:02:34 [INFO   ] 📋 Mode: Auto-Reserve + Notify
+2026-09-08 20:02:34 [INFO   ] 📋 Monitoring: 5 target(s)
+2026-09-08 20:02:34 [INFO   ] 📋 Notifications: macOS
+2026-09-08 20:02:34 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:02:34 [INFO   ] 🎯 Monitoring targets: 184648655750917153 (Freshslice Pizza - 525 University Ave), 271066872308728161 (Jo's Cha X Bolobaw!), 231679099986547809 (Heval cafe), 231069936014938561 (Heval cafe), 201852175370777825 (茶宴 Chayan Toronto)
+2026-09-08 20:02:34 [INFO   ] ⚡ Burst windows configured: 0:00-08:20, 21:20-21:59
+2026-09-08 20:02:34 [INFO   ] 🔄 Normal interval: 90s | Burst interval: 3s
+2026-09-08 20:02:34 [INFO   ] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2026-09-08 20:02:34 [INFO   ] 🚀 Polling started. Press Ctrl+C to stop.
+
+2026-09-08 20:02:35 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 3 bags available!
+2026-09-08 20:02:35 [INFO   ] 🎯 STOCK DETECTED at Jo's Cha X Bolobaw!! Attempting reservation...
+2026-09-08 20:02:35 [INFO   ]    Item ID: 271066872308728161 | Available: 3 | Reserving: 1
+2026-09-08 20:02:35 [INFO   ] 🎉 RESERVED! Order ID: bnx0fnb6sxt51
+2026-09-08 20:02:35 [INFO   ] ⏰ You have ~5 minutes to pay in the TGTG app!
+2026-09-08 20:02:37 [INFO   ] 📣 Notifications sent: 🏪 Jo's Cha X Bolobaw!
+🥡 Drinks Surprise Bag
+💰 4.99 CAD
+📦 Available: 3
+🆔 Item ID:...
+2026-09-08 20:02:37 [INFO   ] 💾 Item 271066872308728161 marked as reserved this session.
+2026-09-08 20:02:37 [INFO   ] [20:02:37] Poll #1 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:04:09 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 2 bags available!
+2026-09-08 20:04:09 [INFO   ] [20:04:09] Poll #2 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:05:35 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:05:36 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:05:40 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 1 bags available!
+2026-09-08 20:05:40 [INFO   ] [20:05:40] Poll #3 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:07:12 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 1 bags available!
+2026-09-08 20:07:12 [INFO   ] [20:07:12] Poll #4 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:08:43 [INFO   ] 🟢 Jo's Cha X Bolobaw! (ID: 271066872308728161): 2 bags available!
+2026-09-08 20:08:43 [INFO   ] [20:08:43] Poll #5 | 🔄NORMAL | Checked: 10 items | Available: 1
+2026-09-08 20:09:10 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:09:10 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:09:21 [INFO   ] 
+🛑 Shutdown requested. Finishing current cycle...
+2026-09-08 20:09:21 [INFO   ] 
+🛑 Polling stopped.
+2026-09-08 20:09:21 [INFO   ]    Total polls: 5
+2026-09-08 20:09:21 [INFO   ]    Items reserved this session: 1
+2026-09-08 20:13:54 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:13:54 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:14:05 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:14:05 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:14:17 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:14:18 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:14:32 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:14:32 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:14:49 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:14:49 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:15:02 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:15:03 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-08 20:15:13 [INFO   ] 🔑 Loading saved credentials...
+2026-09-08 20:15:13 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-10 14:13:47 [INFO   ] 🔑 Loading saved credentials...
+2026-09-10 14:13:48 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
+2026-09-10 14:13:48 [INFO   ] 📋 Fetching your favorite items...
+
+2026-09-10 14:13:48 [ERROR  ] ❌ Failed to fetch favorites: (403, b'{"url":"https://geo.captcha-delivery.com/interstitial/?initialCid=AHrlqAAAAAMASluZcB3XtAIAzDBOsw==&cid=UMZWs0QzxQXhSwjDBU4qKLXPxKEaLozOG0RnyOae2CtaG~JfN248vpArgwrKCsO0ZdAUuY24eevKOIu6p5ue9xuqDGL_MTYRSK2HjQD4zJEQjjQyEScO1ZNBcHY0RAYY&referer=https%3A%2F%2Fapptoogoodtogo.com%2Fapi%2Ftoken%2Fv1%2Frefresh&hash=1D42C2CA6131C526E09F294FE96F94&t=it&s=35558&e=8532583f5fb319e7436e596393fe45ee9ae20a377bafa5f89da54a32b76e418e030d88bb9c406383c66b2d48d22b1f0b&b=2461432"}')
+2026-09-10 14:31:10 [WARNING] ⚠️  Saved credentials already exist.
+2026-09-10 14:31:10 [INFO   ]    Running login will overwrite them.
+2026-09-10 14:31:15 [INFO   ] Starting login for: liderrick616@gmail.com
+2026-09-10 14:31:15 [INFO   ] 📧 Check your email — click the login link from Too Good To Go.
+2026-09-10 14:31:15 [INFO   ] ⏳ Waiting for email verification...
+2026-09-10 14:32:06 [INFO   ] 🔑 Loading saved credentials...
+2026-09-10 14:32:06 [INFO   ] 🔗 Credentials loaded. Token refresh handled automatically.
