@@ -10,7 +10,7 @@ import os
 import sys
 import base64
 
-from tgtg import TgtgClient
+from api_client import TgtgClient
 from cryptography.fernet import Fernet
 
 from logger_setup import get_logger
@@ -110,7 +110,7 @@ def login(email: str) -> TgtgClient:
     log.info("📧 Check your email — click the login link from Too Good To Go.")
     log.info("⏳ Waiting for email verification...")
 
-    client = TgtgClient(email=email)
+    client = TgtgClient(email=email, timeout=20)
     credentials = client.get_credentials()
 
     log.info("✅ Login successful!")
@@ -142,10 +142,9 @@ def get_client(config: dict) -> TgtgClient:
                 access_token=creds.get("access_token", ""),
                 refresh_token=creds.get("refresh_token", ""),
                 cookie=creds.get("cookie", ""),
+                timeout=20,
             )
-            # Test the connection by making a lightweight request
-            # The tgtg library handles token refresh automatically
-            log.info("🔗 Credentials loaded. Token refresh handled automatically.")
+            log.info("🔗 Credentials loaded from disk; API access has not yet been verified.")
             return client
         except Exception as e:
             log.warning(f"Saved credentials failed: {e}")

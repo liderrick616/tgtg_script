@@ -132,6 +132,14 @@ def _notify_macos(title: str, message: str, play_sound: bool = True):
         log.warning(f"macOS notification failed: {e}")
 
 
+def notify_payment_result(config, item_data, order_id, result):
+    """Only explicit payment confirmation receives a purchased notification."""
+    store_name = item_data.get("store", {}).get("store_name", "Unknown Store")
+    title = "BAG PURCHASED" if result.status == "paid" else "TGTG: CHECK ORDER"
+    message = f"{store_name}\nOrder: {order_id or 'not confirmed'}\n{result.message}"
+    notify_all(config, message, title=title)
+
+
 def _notify_telegram(telegram_config: dict, title: str, message: str, details: dict = None):
     """Send a Telegram message via Bot API."""
     log = get_logger()

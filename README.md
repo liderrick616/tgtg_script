@@ -2,7 +2,14 @@
 
 Auto-reserve Too Good To Go surprise bags the instant they drop.
 
-This bot monitors your target surprise bags, automatically reserves them when stock appears, and sends you an urgent push notification so you can complete payment in the official TGTG app within the ~5 minute hold window.
+This bot monitors your target surprise bags and reserves them when stock appears.
+It now includes opt-in automatic card payment through the published TGTG/Adyen
+checkout flow. Card number and expiry are saved in macOS Keychain; CVV is entered
+once at startup and kept in memory for that run.
+
+**Payment compatibility is experimental.** Offline tests pass, but a live purchase
+has not been validated. A bank challenge or an unsupported API response still
+requires checking the official app. See [PAYMENT_SETUP.md](PAYMENT_SETUP.md) for setup.
 
 ---
 

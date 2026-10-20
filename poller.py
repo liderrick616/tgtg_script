@@ -4,8 +4,8 @@ poller.py — Smart polling engine with adaptive rate limiting for the TGTG bot.
 Features:
 - Normal mode: polls at a relaxed interval (60-120s)
 - Burst mode: polls aggressively during user-defined drop windows (2-5s)
-- Jitter: randomizes intervals to mimic human behavior
-- DataDome-aware: backs off on 403 errors
+- Jitter: spreads requests over time
+- Stops on access-denied responses
 - Periodic credential refresh
 """
 
@@ -20,6 +20,7 @@ from tgtg import TgtgClient
 from logger_setup import get_logger
 from auth import refresh_and_save
 from reserver import attempt_reserve
+from api_client import http_status, access_message
 
 
 # Track which items we've already reserved in this session to avoid duplicates
@@ -37,7 +38,17 @@ def _signal_handler(signum, frame):
     log.info("\n🛑 Shutdown requested. Finishing current cycle...")
 
 
-def _is_in_burst_window(burst_windows: list) -> bool:
+def _minutes(value):
+    if not isinstance(value, str):
+        return None
+    parts = value.split(":")
+    if len(parts) != 2 or not all(p.isascii() and p.isdigit() for p in parts):
+        return None
+    hour, minute = map(int, parts)
+    return hour * 60 + minute if 0 <= hour <= 23 and 0 <= minute <= 59 else None
+
+
+def _is_in_burst_window(burst_windows: list, now=None) -> bool:
     """
     Check if the current time falls within any configured burst window.
 
@@ -47,15 +58,17 @@ def _is_in_burst_window(burst_windows: list) -> bool:
     Returns:
         True if currently in a burst window.
     """
-    now = datetime.now()
-    current_time = now.strftime("%H:%M")
+    now = now or datetime.now()
+    current_time = now.hour * 60 + now.minute
 
     for window in burst_windows:
-        start = window.get("start", "")
-        end = window.get("end", "")
-        if start and end:
-            if start <= current_time <= end:
-                return True
+        start, end = _minutes(window.get("start")), _minutes(window.get("end"))
+        if start is None or end is None:
+            continue
+        if start <= end and start <= current_time <= end:
+            return True
+        if start > end and (current_time >= start or current_time <= end):
+            return True
     return False
 
 
@@ -103,7 +116,7 @@ def _get_target_names(config: dict) -> dict:
     return {str(t.get("item_id", "")): t.get("name", "") for t in targets if t.get("item_id")}
 
 
-def run_polling_loop(client: TgtgClient, config: dict):
+def run_polling_loop(client: TgtgClient, config: dict, payment=None, initial_items=None):
     """
     Main polling loop. Monitors target items and triggers reservations.
 
@@ -115,6 +128,8 @@ def run_polling_loop(client: TgtgClient, config: dict):
     """
     global _shutdown_requested, _reserved_this_session
 
+    _shutdown_requested = False
+    _reserved_this_session = set()
     log = get_logger()
     signal.signal(signal.SIGINT, _signal_handler)
     signal.signal(signal.SIGTERM, _signal_handler)
@@ -123,7 +138,6 @@ def run_polling_loop(client: TgtgClient, config: dict):
     target_ids = _get_target_item_ids(config)
     target_names = _get_target_names(config)
     polling_config = config.get("polling", {})
-    error_cooldown = polling_config.get("error_cooldown", 300)
 
     if monitor_all:
         log.info("📡 Monitoring ALL favorites...")
@@ -152,6 +166,7 @@ def run_polling_loop(client: TgtgClient, config: dict):
     poll_count = 0
     last_credential_refresh = datetime.now()
     consecutive_errors = 0
+    access_denied = False
 
     while not _shutdown_requested:
         poll_count += 1
@@ -160,8 +175,8 @@ def run_polling_loop(client: TgtgClient, config: dict):
 
         try:
             # Fetch items
-            if monitor_all:
-                items = client.get_items(favorites_only=True)
+            if initial_items is not None:
+                items, initial_items = initial_items, None
             else:
                 items = client.get_items(favorites_only=True)
 
@@ -188,7 +203,7 @@ def run_polling_loop(client: TgtgClient, config: dict):
             for item_data in available_items:
                 item_id = str(item_data.get("item", {}).get("item_id", ""))
                 if item_id not in _reserved_this_session:
-                    order = attempt_reserve(client, config, item_data)
+                    order = attempt_reserve(client, config, item_data, payment=payment)
                     if order:
                         _reserved_this_session.add(item_id)
                         log.info(f"💾 Item {item_id} marked as reserved this session.")
@@ -205,21 +220,21 @@ def run_polling_loop(client: TgtgClient, config: dict):
 
         except Exception as e:
             consecutive_errors += 1
-            error_msg = str(e)
+            status = http_status(e)
 
-            if "403" in error_msg or "Forbidden" in error_msg:
-                log.error(f"🚫 DataDome block detected! Cooling down for {error_cooldown}s...")
-                log.warning("   Consider using a residential IP or reducing polling frequency.")
-                _sleep_with_interrupt(error_cooldown)
-                continue
-            elif "429" in error_msg:
+            if status in {401, 403}:
+                log.error("%s", access_message(e))
+                access_denied = True
+                break
+            elif status == 429:
                 backoff = min(60 * consecutive_errors, 300)
                 log.warning(f"⏳ Rate limited (429). Backing off for {backoff}s...")
                 _sleep_with_interrupt(backoff)
                 continue
             else:
                 backoff = min(10 * consecutive_errors, 120)
-                log.error(f"❌ Poll error (attempt {consecutive_errors}): {error_msg}")
+                log.error("Poll failed (attempt %s, HTTP status %s).",
+                          consecutive_errors, status if status else "unavailable")
                 log.info(f"   Retrying in {backoff}s...")
                 _sleep_with_interrupt(backoff)
                 continue
@@ -238,6 +253,7 @@ def run_polling_loop(client: TgtgClient, config: dict):
     log.info("\n🛑 Polling stopped.")
     log.info(f"   Total polls: {poll_count}")
     log.info(f"   Items reserved this session: {len(_reserved_this_session)}")
+    return not access_denied
 
 
 def _sleep_with_interrupt(seconds: float):
@@ -245,4 +261,4 @@ def _sleep_with_interrupt(seconds: float):
     global _shutdown_requested
     end_time = time.time() + seconds
     while time.time() < end_time and not _shutdown_requested:
-        time.sleep(min(0.5, end_time - time.time()))
+        time.sleep(max(0, min(0.5, end_time - time.time())))

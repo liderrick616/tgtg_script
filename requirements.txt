@@ -1,5 +1,6 @@
-tgtg>=0.18.0
+tgtg==0.19.0
 requests>=2.31.0
 pyyaml>=6.0
 cryptography>=41.0.0
 colorama>=0.4.6
+keyring>=25.0,<26

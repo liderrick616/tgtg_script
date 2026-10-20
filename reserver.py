@@ -7,10 +7,11 @@ Handles creating reservations and monitoring order status.
 from tgtg import TgtgClient
 
 from logger_setup import get_logger
-from notifier import notify_stock_detected
+from notifier import notify_stock_detected, notify_payment_result
+from card_store import PaymentSetupError
 
 
-def attempt_reserve(client: TgtgClient, config: dict, item_data: dict) -> dict | None:
+def attempt_reserve(client: TgtgClient, config: dict, item_data: dict, payment=None) -> dict | None:
     """
     Attempt to reserve a surprise bag.
 
@@ -43,38 +44,53 @@ def attempt_reserve(client: TgtgClient, config: dict, item_data: dict) -> dict |
         notify_stock_detected(config, item_data, reserved=False)
         return None
 
+    if config.get("payment", {}).get("enabled", False) and payment is None:
+        log.error("Automatic payment was requested but not initialized. Skipping reservation.")
+        return None
+
+    if payment is not None:
+        try:
+            if not payment.claim_reservation(item_data):
+                log.debug("Skipping item: already attempted for this pickup window or run limit reached.")
+                return None
+        except PaymentSetupError as exc:
+            log.warning("Skipping automatic purchase: %s", exc)
+            return None
+        except Exception:
+            log.error("Could not save the duplicate guard. Skipping automatic purchase.")
+            return None
+
     # Auto-reserve mode — try to lock the bag
     log.info(f"🎯 STOCK DETECTED at {store_name}! Attempting reservation...")
     log.info(f"   Item ID: {item_id} | Available: {available} | Reserving: {quantity}")
 
     try:
         order = client.create_order(item_id=item_id, item_count=quantity)
-        order_id = order.get("id", order.get("order_id", "unknown"))
-
-        log.info(f"🎉 RESERVED! Order ID: {order_id}")
-        log.info(f"⏰ You have ~5 minutes to pay in the TGTG app!")
-
-        # Send urgent notifications
-        notify_stock_detected(config, item_data, reserved=True, order_id=str(order_id))
-
-        return order
-
     except Exception as e:
-        error_msg = str(e)
-        log.error(f"❌ Reservation failed for {store_name} (ID: {item_id}): {error_msg}")
-
-        if "ITEMS_NOT_AVAILABLE" in error_msg or "sold out" in error_msg.lower():
-            log.warning("   Bag sold out before we could reserve it. Better luck next time!")
-        elif "403" in error_msg:
-            log.warning("   Possible DataDome block. Consider increasing polling interval.")
-        elif "ORDER_LIMIT" in error_msg:
-            log.warning("   Order limit reached for this item. You may already have an active order.")
-        else:
-            log.warning(f"   Unexpected error: {error_msg}")
-
-        # Still notify about availability even if reservation failed
-        notify_stock_detected(config, item_data, reserved=False)
+        # A timeout may still have created an order. Keep the durable claim.
+        log.error("Reservation could not be confirmed for %s. Check the TGTG app.", store_name)
+        from payment import PaymentResult
+        try:
+            notify_payment_result(config, item_data, None, PaymentResult(
+                "unknown", "Reservation could not be confirmed. Check the app before trying again."
+            ))
+        except Exception:
+            log.warning("Could not deliver the reservation notification.")
         return None
+
+    order_id = str(order.get("id", order.get("order_id", "unknown")))
+    log.info("Reserved order %s.", order_id)
+    # Payment/notification errors must not hide an already-created reservation.
+    try:
+        if payment is not None:
+            result = payment.pay(order, item_data)
+            log.info("Checkout %s: %s", result.status, result.message)
+            notify_payment_result(config, item_data, order_id, result)
+        else:
+            notify_stock_detected(config, item_data, reserved=True, order_id=order_id)
+    except Exception:
+        log.error("Checkout or notification could not be confirmed. Check order %s in the app.", order_id)
+    return order
 
 
 def check_order_status(client: TgtgClient, order_id: str) -> dict | None:

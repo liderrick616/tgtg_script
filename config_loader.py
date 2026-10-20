@@ -5,6 +5,7 @@ config_loader.py — YAML configuration parser and validator for the TGTG bot.
 import os
 import sys
 import yaml
+from pathlib import Path
 
 
 # Default configuration values
@@ -23,6 +24,13 @@ DEFAULTS = {
     "reservation": {
         "auto_reserve": True,
         "quantity": 1,
+    },
+    "payment": {
+        "enabled": False,
+        "max_order_total": None,
+        "currency": "",
+        "max_orders_per_run": 1,
+        "state_file": str(Path.home() / "Library/Application Support/TGTG Sniper/payment_state.sqlite3"),
     },
     "notifications": {
         "macos_alert": True,
@@ -70,6 +78,10 @@ def load_config(config_path: str = None) -> dict:
         raw = yaml.safe_load(f) or {}
 
     config = _deep_merge(DEFAULTS, raw)
+    # Isolate nested defaults before applying CLI overrides.
+    config["payment"] = dict(config["payment"])
+    if type(config["payment"].get("enabled")) is not bool:
+        raise ValueError("payment.enabled must be true or false, without quotes.")
     _validate(config)
     return config
 

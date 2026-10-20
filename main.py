@@ -18,6 +18,9 @@ from logger_setup import setup_logger, get_logger
 from auth import get_client, login, has_saved_credentials, load_credentials
 from notifier import send_test_notification
 from poller import run_polling_loop
+from card_store import PaymentSetupError, setup_card, load_card, forget_card
+from payment import prepare_payment, validate_settings
+from api_client import APIAccessError, check_access
 
 
 BANNER = r"""
@@ -65,6 +68,19 @@ def cmd_run(args, config):
     log = get_logger()
     print(BANNER)
 
+    if args.no_burst:
+        config["polling"] = {**config["polling"], "burst_windows": []}
+
+    settings = config["payment"]
+    if args.auto_pay:
+        settings["enabled"] = True
+    if args.max_total is not None:
+        settings["max_order_total"] = args.max_total
+    if args.currency is not None:
+        settings["currency"] = args.currency.upper()
+    if settings["enabled"]:
+        validate_settings(config)
+
     if not has_saved_credentials():
         log.error("❌ No saved credentials. Run 'python main.py login' first.")
         sys.exit(1)
@@ -80,7 +96,10 @@ def cmd_run(args, config):
     targets = config.get("targets", [])
     notif = config.get("notifications", {})
 
-    log.info(f"📋 Mode: {'Auto-Reserve + Notify' if auto_reserve else 'Notify Only'}")
+    mode = "Auto-Reserve + Pay" if settings["enabled"] else (
+        "Auto-Reserve + Notify" if auto_reserve else "Notify Only"
+    )
+    log.info(f"📋 Mode: {mode}")
     log.info(f"📋 Monitoring: {'All Favorites' if monitor_all else f'{len(targets)} target(s)'}")
 
     channels = []
@@ -93,7 +112,43 @@ def cmd_run(args, config):
     log.info(f"📋 Notifications: {', '.join(channels) if channels else 'None ⚠️'}")
     log.info("━" * 60)
 
-    run_polling_loop(client, config)
+    payment = None
+    try:
+        log.info("Checking API access before payment setup...")
+        initial_items = check_access(client)
+        log.info("API access verified; received %s favorite item(s).", len(initial_items))
+        if settings["enabled"]:
+            payment = prepare_payment(client, config)
+            log.info("Automatic payment enabled: up to %s %s per order; %s reservation attempt(s) this run.",
+                     payment.maximum, payment.currency, payment.max_orders)
+        if run_polling_loop(client, config, payment=payment, initial_items=initial_items) is False:
+            sys.exit(1)
+    finally:
+        if payment is not None:
+            payment.close()
+
+
+def cmd_check_access(args, config):
+    if not has_saved_credentials():
+        raise APIAccessError("No saved login. Run: python3 main.py login")
+    items = check_access(get_client(config))
+    print(f"API access verified: received {len(items)} favorite item(s). No purchase was attempted.")
+
+
+def cmd_setup_payment(args, config):
+    setup_card(config)
+
+
+def cmd_payment_status(args, config):
+    card = load_card(config)
+    print(f"Saved card: ending {card.number[-4:]} (macOS Keychain). CVV is not stored.")
+    print(f"Automatic payment in config: {'enabled' if config['payment']['enabled'] else 'disabled'}")
+    print("This checks local setup only; a live payment has not been validated.")
+
+
+def cmd_forget_payment(args, config):
+    forget_card(config)
+    print("Saved card removed from Keychain. Stop any running bot to clear its in-memory card/CVV.")
 
 
 def cmd_list_favorites(args, config):
@@ -178,9 +233,17 @@ Examples:
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     subparsers.add_parser("login", help="Authenticate with Too Good To Go via email")
-    subparsers.add_parser("run", help="Start the polling bot")
+    run_parser = subparsers.add_parser("run", help="Start the polling bot")
+    run_parser.add_argument("--auto-pay", action="store_true", help="Pay automatically after reservation")
+    run_parser.add_argument("--max-total", help="Maximum final total per order, including tax")
+    run_parser.add_argument("--currency", help="Currency for automatic payment, e.g. CAD")
+    run_parser.add_argument("--no-burst", action="store_true", help="Use normal polling interval throughout this run")
     subparsers.add_parser("list-favorites", help="Display all favorited items with IDs")
     subparsers.add_parser("test-notify", help="Send a test notification")
+    subparsers.add_parser("setup-payment", help="Save card details in macOS Keychain")
+    subparsers.add_parser("payment-status", help="Show local payment setup (does not charge)")
+    subparsers.add_parser("forget-payment", help="Remove the saved card from Keychain")
+    subparsers.add_parser("check-access", help="Check API access once without reading card details or buying")
 
     args = parser.parse_args()
 
@@ -193,7 +256,7 @@ Examples:
 
     # Setup logging
     log_config = config.get("logging", {})
-    setup_logger(
+    log = setup_logger(
         level=log_config.get("level", "INFO"),
         log_file=log_config.get("file", "tgtg_bot.log"),
     )
@@ -204,11 +267,21 @@ Examples:
         "run": cmd_run,
         "list-favorites": cmd_list_favorites,
         "test-notify": cmd_test_notify,
+        "setup-payment": cmd_setup_payment,
+        "payment-status": cmd_payment_status,
+        "forget-payment": cmd_forget_payment,
+        "check-access": cmd_check_access,
     }
 
     handler = commands.get(args.command)
     if handler:
-        handler(args, config)
+        try:
+            handler(args, config)
+        except (PaymentSetupError, APIAccessError) as exc:
+            log.error("%s", exc)
+            sys.exit(1)
+        except KeyboardInterrupt:
+            log.info("Stopped.")
     else:
         parser.print_help()
 

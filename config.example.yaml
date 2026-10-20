@@ -1,0 +1,15 @@
+tgtg:
+  email: "your_email@example.com"
+monitor_all_favorites: false
+targets: []
+reservation:
+  auto_reserve: true
+  quantity: 1
+payment:
+  enabled: false
+  max_order_total: null
+  currency: ""
+  max_orders_per_run: 1
+notifications:
+  macos_alert: true
+  play_sound: true

@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.log
+credentials.json
+.encryption_key
+config.yaml
+payment_token.json
+payment_responses.json
+*.sqlite3*
+.env
+.venv/
