@@ -1,192 +1,87 @@
-# 🥡 TGTG Sniper Bot
+# TGTG Sniper Bot
 
-Auto-reserve Too Good To Go surprise bags the instant they drop.
+A Python command-line tool for monitoring Too Good To Go favorites, with optional
+reservation and experimental card payment. It uses an unofficial API and is not
+affiliated with Too Good To Go.
 
-This bot monitors your target surprise bags and reserves them when stock appears.
-It now includes opt-in automatic card payment through the published TGTG/Adyen
-checkout flow. Card number and expiry are saved in macOS Keychain; CVV is entered
-once at startup and kept in memory for that run.
+**Live automatic payment has not been validated.** Offline tests exercise the
+checkout logic, but do not establish that the current service accepts it.
+API access can be denied by DataDome or other server restrictions. The bot stops
+on access denial; updating this script does not remove a server-side block.
 
-**Payment compatibility is experimental.** Offline tests pass, but a live purchase
-has not been validated. A bank challenge or an unsupported API response still
-requires checking the official app. See [PAYMENT_SETUP.md](PAYMENT_SETUP.md) for setup.
+## Setup
 
----
-
-## ⚡ Quick Start
-
-### 1. Install Python dependencies
+Python 3.10 or newer is required. Saving a card requires macOS Keychain.
+From the project directory:
 
 ```bash
-cd "/Users/derrick/Desktop/tgtg script"
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+cp config.example.yaml config.yaml
 ```
 
-### 2. Configure your email
-
-Edit `config.yaml` and set your Too Good To Go account email:
-
-```yaml
-tgtg:
-  email: "your_real_email@example.com"
-```
-
-### 3. Authenticate
+Edit `config.yaml` to set your account email. Keep this file private.
 
 ```bash
-python main.py login
+python3 main.py login
+python3 main.py check-access
+python3 main.py list-favorites
 ```
 
-This sends a verification email from TGTG. Click the link in the email to complete login. Your credentials are saved (encrypted) locally so you don't need to re-authenticate.
-
-### 4. Find your target item IDs
+Follow the email verification flow during login. Add your desired item IDs to
+`targets` in `config.yaml`, or enable `monitor_all_favorites`. Then run:
 
 ```bash
-python main.py list-favorites
+python3 main.py run --no-burst
 ```
 
-This shows all your favorited stores with their item IDs. Copy the IDs you want to snipe.
+The sample configuration only sends availability notifications. To reserve bags,
+explicitly set `reservation.auto_reserve: true`. A reservation by itself is not a
+completed purchase. See [PAYMENT_SETUP.md](PAYMENT_SETUP.md) for automatic payment.
+Press Ctrl+C to stop.
 
-### 5. Configure targets
+## Commands
 
-Edit `config.yaml` and add your target item IDs:
+| Command | Purpose |
+| --- | --- |
+| `login` | Authenticate through email verification |
+| `check-access` | Read favorites once, without card access or a purchase |
+| `list-favorites` | Show favorite item IDs |
+| `run` | Monitor configured targets |
+| `test-notify` | Send a notification through enabled channels |
+| `setup-payment` | Save a card in macOS Keychain |
+| `payment-status` | Show local card setup, without charging |
+| `forget-payment` | Delete the card saved for the configured account |
 
-```yaml
-targets:
-  - item_id: "123456"
-    name: "Amazing Bakery"
-  - item_id: "789012"
-    name: "Sushi Place"
-```
+Use `python3 main.py --help` or `python3 main.py run --help` for options.
+A custom configuration path goes before the command:
+`python3 main.py --config path/to/private.yaml run`.
 
-Or monitor ALL your favorites:
+macOS notifications are enabled in the example. Telegram and Discord are
+optional; their credentials belong only in your private configuration.
+Notification content includes store and order information.
 
-```yaml
-monitor_all_favorites: true
-```
+## Data and publishing
 
-### 6. Run the bot
+This source distribution contains blank settings and synthetic test data.
+Never commit your working `config.yaml`, saved credentials, encryption key,
+logs, captures, databases, or backups. `.gitignore` excludes common local files;
+it cannot remove files that were committed previously.
+
+Use a fresh repository when publishing a sanitized source copy. Review the
+staged files before pushing. Copying clean files over an existing repository
+does not erase its earlier commits. See [SECURITY.md](SECURITY.md) for storage
+locations and cleanup guidance.
+
+## Offline tests
 
 ```bash
-python main.py run
+python3 -m pip install pytest
+python3 -m pytest -q
 ```
 
-Press `Ctrl+C` to stop.
+Tests use mock services, synthetic card details and generated encryption keys.
+They do not make real reservations or payments.
 
----
-
-## 📱 Setting Up Notifications
-
-### macOS Native Alerts (enabled by default)
-
-No setup needed — the bot will display macOS notifications and play a sound when bags are detected.
-
-### Telegram (recommended for phone alerts)
-
-1. Open Telegram and message [@BotFather](https://t.me/BotFather)
-2. Send `/newbot` and follow the prompts to create a bot
-3. Copy the bot token (looks like `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)
-4. Start a chat with your new bot and send any message
-5. Get your chat ID by visiting: `https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates`
-6. Update `config.yaml`:
-
-```yaml
-notifications:
-  telegram:
-    enabled: true
-    bot_token: "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-    chat_id: "987654321"
-```
-
-### Discord Webhook
-
-1. In your Discord server, go to Channel Settings → Integrations → Webhooks
-2. Create a new webhook and copy the URL
-3. Update `config.yaml`:
-
-```yaml
-notifications:
-  discord:
-    enabled: true
-    webhook_url: "https://discord.com/api/webhooks/..."
-```
-
-### Test your notifications
-
-```bash
-python main.py test-notify
-```
-
----
-
-## ⚙️ Configuration Reference
-
-### Polling Schedule
-
-```yaml
-polling:
-  normal_interval: 90    # Seconds between polls (normal mode)
-  burst_interval: 3      # Seconds between polls (burst mode)
-  jitter_min: 0.5        # Min random delay added
-  jitter_max: 1.8        # Max random delay added
-  burst_windows:         # Times to poll aggressively
-    - start: "08:00"
-      end: "08:20"
-  error_cooldown: 300    # Cooldown after a 403 block (seconds)
-```
-
-### Reservation
-
-```yaml
-reservation:
-  auto_reserve: true     # Auto-reserve when stock detected?
-  quantity: 1            # Number of bags to reserve
-```
-
----
-
-## 🛡️ Safety & Anti-Ban Tips
-
-| Setting | Recommendation | Why |
-|---------|---------------|-----|
-| `normal_interval` | 60–120s | Avoids DataDome rate limits |
-| `burst_interval` | 2–5s | Only during known drop windows |
-| `jitter` | 0.5–1.8s | Randomizes timing to look human |
-| Network | **Home WiFi** | Datacenter IPs are blocked on sight |
-| Account | Test with throwaway first | Before using your main account |
-
----
-
-## 🔧 CLI Commands
-
-| Command | Description |
-|---------|-------------|
-| `python main.py login` | Authenticate via email |
-| `python main.py run` | Start the polling bot |
-| `python main.py list-favorites` | Show all favorites with item IDs |
-| `python main.py test-notify` | Send test notification |
-
----
-
-## 📁 Project Structure
-
-```
-tgtg script/
-├── config.yaml          # Your configuration
-├── credentials.json     # Encrypted credentials (auto-generated)
-├── main.py              # CLI entry point
-├── auth.py              # Authentication & token management
-├── poller.py            # Smart polling engine
-├── reserver.py          # Order reservation logic
-├── notifier.py          # Notification system
-├── config_loader.py     # Config parser
-├── logger_setup.py      # Logging setup
-├── requirements.txt     # Python dependencies
-└── README.md            # This file
-```
-
----
-
-## ⚠️ Disclaimer
-
-This bot uses an unofficial, reverse-engineered API. Too Good To Go does not provide a public API, and automated interaction may violate their Terms of Service. Use at your own risk. Always test with a throwaway account first.
+Third-party attribution is in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

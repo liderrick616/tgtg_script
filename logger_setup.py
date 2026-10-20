@@ -50,7 +50,7 @@ class FileFormatter(logging.Formatter):
         return f"{timestamp} [{record.levelname:<7}] {record.getMessage()}"
 
 
-def setup_logger(level: str = "INFO", log_file: str = "tgtg_bot.log") -> logging.Logger:
+def setup_logger(level: str = "INFO", log_file: str | None = None) -> logging.Logger:
     """
     Configure and return the application logger.
 
@@ -65,7 +65,9 @@ def setup_logger(level: str = "INFO", log_file: str = "tgtg_bot.log") -> logging
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
 
     # Clear any existing handlers
-    logger.handlers.clear()
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+        handler.close()
 
     # Console handler with colors
     console_handler = logging.StreamHandler(sys.stdout)
@@ -73,12 +75,13 @@ def setup_logger(level: str = "INFO", log_file: str = "tgtg_bot.log") -> logging
     logger.addHandler(console_handler)
 
     # File handler (plain text)
-    try:
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
-        file_handler.setFormatter(FileFormatter())
-        logger.addHandler(file_handler)
-    except (OSError, PermissionError) as e:
-        logger.warning(f"Could not create log file '{log_file}': {e}")
+    if log_file:
+        try:
+            file_handler = logging.FileHandler(log_file, encoding="utf-8")
+            file_handler.setFormatter(FileFormatter())
+            logger.addHandler(file_handler)
+        except (OSError, PermissionError):
+            logger.warning("Could not create the configured log file.")
 
     return logger
 

@@ -10,7 +10,7 @@ import os
 import sys
 import base64
 
-from api_client import TgtgClient
+from api_client import APIAccessError, TgtgClient, access_message
 from cryptography.fernet import Fernet
 
 from logger_setup import get_logger
@@ -63,7 +63,7 @@ def save_credentials(credentials: dict):
     with open(CREDENTIALS_FILE, "w") as f:
         json.dump({"encrypted": encrypted}, f)
     os.chmod(CREDENTIALS_FILE, 0o600)
-    log.info(f"Credentials saved to {CREDENTIALS_FILE}")
+    log.info("Credentials saved locally.")
 
 
 def load_credentials() -> dict | None:
@@ -80,9 +80,9 @@ def load_credentials() -> dict | None:
         with open(CREDENTIALS_FILE, "r") as f:
             data = json.load(f)
         return _decrypt_data(data["encrypted"])
-    except Exception as e:
+    except Exception:
         log = get_logger()
-        log.warning(f"Could not load saved credentials: {e}")
+        log.warning("Could not load saved credentials. Sign in again.")
         return None
 
 
@@ -106,12 +106,15 @@ def login(email: str) -> TgtgClient:
     """
     log = get_logger()
 
-    log.info(f"Starting login for: {email}")
+    log.info("Starting login for the configured account.")
     log.info("📧 Check your email — click the login link from Too Good To Go.")
     log.info("⏳ Waiting for email verification...")
 
-    client = TgtgClient(email=email, timeout=20)
-    credentials = client.get_credentials()
+    try:
+        client = TgtgClient(email=email, timeout=20)
+        credentials = client.get_credentials()
+    except Exception as exc:
+        raise APIAccessError(access_message(exc)) from None
 
     log.info("✅ Login successful!")
     save_credentials(credentials)
@@ -146,8 +149,8 @@ def get_client(config: dict) -> TgtgClient:
             )
             log.info("🔗 Credentials loaded from disk; API access has not yet been verified.")
             return client
-        except Exception as e:
-            log.warning(f"Saved credentials failed: {e}")
+        except Exception:
+            log.warning("Could not initialize the saved login.")
             log.info("Falling back to email login...")
 
     # No saved creds or they failed — do email login
@@ -175,5 +178,5 @@ def refresh_and_save(client: TgtgClient):
         credentials = client.get_credentials()
         save_credentials(credentials)
         log.debug("🔄 Credentials refreshed and saved.")
-    except Exception as e:
-        log.warning(f"Could not refresh credentials: {e}")
+    except Exception:
+        log.warning("Could not refresh credentials. Check access before continuing.")

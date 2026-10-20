@@ -53,7 +53,7 @@ def validate_settings(config):
     max_orders = settings.get("max_orders_per_run", 1)
     if type(max_orders) is not int or not 1 <= max_orders <= 100:
         raise PaymentSetupError("payment.max_orders_per_run must be an integer from 1 to 100.")
-    if config.get("reservation", {}).get("auto_reserve", True) is not True:
+    if config.get("reservation", {}).get("auto_reserve", False) is not True:
         raise PaymentSetupError("Automatic payment requires reservation.auto_reserve: true.")
     quantity = config.get("reservation", {}).get("quantity", 1)
     if type(quantity) is not int or not 1 <= quantity <= 100:

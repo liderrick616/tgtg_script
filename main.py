@@ -48,7 +48,7 @@ def cmd_login(args, config):
     email = config.get("tgtg", {}).get("email", "")
     if not email or email == "your_email@example.com":
         log.error("❌ Set your email in config.yaml first!")
-        log.info("   Edit config.yaml and set: tgtg.email: \"your@email.com\"")
+        log.info("   Edit config.yaml and set: tgtg.email: \"your_email@example.com\"")
         sys.exit(1)
 
     if has_saved_credentials():
@@ -91,7 +91,7 @@ def cmd_run(args, config):
     log.info("━" * 60)
 
     # Show configuration summary
-    auto_reserve = config.get("reservation", {}).get("auto_reserve", True)
+    auto_reserve = config.get("reservation", {}).get("auto_reserve", False)
     monitor_all = config.get("monitor_all_favorites", False)
     targets = config.get("targets", [])
     notif = config.get("notifications", {})
@@ -164,11 +164,7 @@ def cmd_list_favorites(args, config):
 
     log.info("📋 Fetching your favorite items...\n")
 
-    try:
-        items = client.get_items(favorites_only=True)
-    except Exception as e:
-        log.error(f"❌ Failed to fetch favorites: {e}")
-        sys.exit(1)
+    items = check_access(client)
 
     if not items:
         log.info("No favorites found. Add some stores to your favorites in the TGTG app first.")
@@ -258,7 +254,7 @@ Examples:
     log_config = config.get("logging", {})
     log = setup_logger(
         level=log_config.get("level", "INFO"),
-        log_file=log_config.get("file", "tgtg_bot.log"),
+        log_file=log_config.get("file"),
     )
 
     # Dispatch to command handler
@@ -282,6 +278,10 @@ Examples:
             sys.exit(1)
         except KeyboardInterrupt:
             log.info("Stopped.")
+        except Exception:
+            # Third-party exceptions can embed request bodies, cookies or URLs.
+            log.error("Command failed. Check local setup and the official app before retrying.")
+            sys.exit(1)
     else:
         parser.print_help()
 

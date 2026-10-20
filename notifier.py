@@ -11,7 +11,7 @@ Supports:
 import json
 import subprocess
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 
 from logger_setup import get_logger
 
@@ -43,7 +43,7 @@ def notify_all(config: dict, message: str, title: str = "🥡 TGTG Sniper", deta
     if discord.get("enabled"):
         _notify_discord(discord, title, message, details)
 
-    log.info(f"📣 Notifications sent: {message[:80]}...")
+    log.info("Notification delivery attempted.")
 
 
 def notify_stock_detected(config: dict, item_data: dict, reserved: bool = False, order_id: str = None):
@@ -128,8 +128,8 @@ def _notify_macos(title: str, message: str, play_sound: bool = True):
             )
 
         log.debug("macOS notification sent.")
-    except Exception as e:
-        log.warning(f"macOS notification failed: {e}")
+    except Exception:
+        log.warning("macOS notification failed.")
 
 
 def notify_payment_result(config, item_data, order_id, result):
@@ -165,9 +165,9 @@ def _notify_telegram(telegram_config: dict, title: str, message: str, details: d
         if resp.status_code == 200:
             log.debug("Telegram notification sent.")
         else:
-            log.warning(f"Telegram API error: {resp.status_code} — {resp.text}")
-    except Exception as e:
-        log.warning(f"Telegram notification failed: {e}")
+            log.warning("Telegram API error (HTTP %s).", resp.status_code)
+    except Exception:
+        log.warning("Telegram notification failed. Check connection and local settings.")
 
 
 def _notify_discord(discord_config: dict, title: str, message: str, details: dict = None):
@@ -184,7 +184,7 @@ def _notify_discord(discord_config: dict, title: str, message: str, details: dic
         "title": title,
         "description": message,
         "color": 0x00C853 if details and details.get("reserved") else 0xFF6D00,
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "footer": {"text": "TGTG Sniper Bot"},
     }
 
@@ -201,9 +201,9 @@ def _notify_discord(discord_config: dict, title: str, message: str, details: dic
         if resp.status_code in (200, 204):
             log.debug("Discord notification sent.")
         else:
-            log.warning(f"Discord webhook error: {resp.status_code} — {resp.text}")
-    except Exception as e:
-        log.warning(f"Discord notification failed: {e}")
+            log.warning("Discord webhook error (HTTP %s).", resp.status_code)
+    except Exception:
+        log.warning("Discord notification failed. Check connection and local settings.")
 
 
 def send_test_notification(config: dict):

@@ -22,7 +22,7 @@ DEFAULTS = {
         "error_cooldown": 300,
     },
     "reservation": {
-        "auto_reserve": True,
+        "auto_reserve": False,
         "quantity": 1,
     },
     "payment": {
@@ -40,7 +40,7 @@ DEFAULTS = {
     },
     "logging": {
         "level": "INFO",
-        "file": "tgtg_bot.log",
+        "file": None,
     },
 }
 
@@ -71,7 +71,7 @@ def load_config(config_path: str = None) -> dict:
 
     if not os.path.exists(config_path):
         print(f"❌ Config file not found: {config_path}")
-        print("   Run the bot from the project directory or specify --config path.")
+        print("   Copy config.example.yaml to config.yaml, or specify --config path.")
         sys.exit(1)
 
     with open(config_path, "r") as f:

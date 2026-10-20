@@ -30,7 +30,7 @@ def attempt_reserve(client: TgtgClient, config: dict, item_data: dict, payment=N
     """
     log = get_logger()
     reservation_config = config.get("reservation", {})
-    auto_reserve = reservation_config.get("auto_reserve", True)
+    auto_reserve = reservation_config.get("auto_reserve", False)
     quantity = reservation_config.get("quantity", 1)
 
     item_id = item_data.get("item", {}).get("item_id", "?")
@@ -107,10 +107,10 @@ def check_order_status(client: TgtgClient, order_id: str) -> dict | None:
     log = get_logger()
     try:
         status = client.get_order_status(order_id=order_id)
-        log.debug(f"Order {order_id} status: {status}")
+        log.debug("Order status retrieved.")
         return status
-    except Exception as e:
-        log.warning(f"Could not check order status for {order_id}: {e}")
+    except Exception:
+        log.warning("Could not check order status. Check the official app.")
         return None
 
 
@@ -130,6 +130,6 @@ def abort_order(client: TgtgClient, order_id: str) -> bool:
         client.abort_order(order_id=order_id)
         log.info(f"🗑️  Order {order_id} aborted.")
         return True
-    except Exception as e:
-        log.warning(f"Could not abort order {order_id}: {e}")
+    except Exception:
+        log.warning("Could not confirm cancellation. Check the official app.")
         return False
