@@ -1,0 +1,36 @@
+# Copy this file to config.yaml and edit that private, ignored copy.
+tgtg:
+  email: ""
+monitor_all_favorites: false
+targets: []
+# Add targets from list-favorites, for example:
+# targets:
+#   - item_id: "YOUR_ITEM_ID"
+#     name: "Your chosen store"
+polling:
+  normal_interval: 90
+  burst_interval: 3
+  jitter_min: 0.5
+  jitter_max: 1.8
+  burst_windows: []
+reservation:
+  auto_reserve: false
+  quantity: 1
+payment:
+  enabled: false
+  max_order_total: null
+  currency: ""
+  max_orders_per_run: 1
+notifications:
+  macos_alert: true
+  play_sound: true
+  telegram:
+    enabled: false
+    bot_token: ""
+    chat_id: ""
+  discord:
+    enabled: false
+    webhook_url: ""
+logging:
+  level: "INFO"
+  file: null  # Console only. Enabling a file can retain item/order information.
